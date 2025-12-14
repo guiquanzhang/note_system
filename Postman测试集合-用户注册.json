@@ -1,0 +1,63 @@
+﻿{
+  "info": {
+    "_postman_id": "cloudnote-register-test",
+    "name": "云笔记-用户注册测试",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "用例1-正常注册成功",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"testuser001\", \"password\": \"123456\", \"email\": \"test001@example.com\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    },
+    {
+      "name": "用例2-用户名为空",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"\", \"password\": \"123456\", \"email\": \"test@example.com\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    },
+    {
+      "name": "用例3-用户名过短",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"ab\", \"password\": \"123456\", \"email\": \"test@example.com\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    },
+    {
+      "name": "用例4-密码为空",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"testuser\", \"password\": \"\", \"email\": \"test@example.com\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    },
+    {
+      "name": "用例5-邮箱格式错误",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"testuser\", \"password\": \"123456\", \"email\": \"invalid-email\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    },
+    {
+      "name": "用例6-用户名已存在",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\"username\": \"testuser001\", \"password\": \"123456\", \"email\": \"test@example.com\"}"},
+        "url": {"raw": "http://localhost:8080/api/user/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "user", "register"]}
+      }
+    }
+  ]
+}

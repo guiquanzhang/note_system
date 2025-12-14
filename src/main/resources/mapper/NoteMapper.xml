@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloudnote.mapper.NoteMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.cloudnote.entity.Note">
+        <id column="note_id" property="noteId" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="user_id" property="userId" />
+        <result column="category_id" property="categoryId" />
+        <result column="tags" property="tags" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        note_id, title, content, user_id, category_id, tags, created_at, updated_at
+    </sql>
+
+    <!-- 自定义查询示例：根据分类ID查询笔记 -->
+    <select id="selectByCategoryId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM note
+        WHERE category_id = #{categoryId}
+        AND user_id = #{userId}
+        ORDER BY updated_at DESC
+    </select>
+
+    <!-- 自定义查询示例：根据标签查询笔记 -->
+    <select id="selectByTag" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM note
+        WHERE FIND_IN_SET(#{tag}, tags) > 0
+        AND user_id = #{userId}
+        ORDER BY updated_at DESC
+    </select>
+
+</mapper>

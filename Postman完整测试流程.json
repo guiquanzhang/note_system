@@ -1,0 +1,176 @@
+{
+  "info": {
+    "_postman_id": "cloudnote-full-test",
+    "name": "云笔记-完整测试流程",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1-用户注册",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"注册成功\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.code).to.eql(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"testuser\", \"password\": \"123456\", \"email\": \"test@example.com\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/user/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "user", "register"]
+        }
+      }
+    },
+    {
+      "name": "2-用户登录",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"登录成功\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.code).to.eql(200);",
+              "    pm.expect(jsonData.data.token).to.exist;",
+              "    pm.environment.set(\"token\", jsonData.data.token);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"testuser\", \"password\": \"123456\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/user/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "user", "login"]
+        }
+      }
+    },
+    {
+      "name": "3-创建分类",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"工作笔记\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/category",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "category"]
+        }
+      }
+    },
+    {
+      "name": "4-获取分类列表",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/category/list",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "category", "list"]
+        }
+      }
+    },
+    {
+      "name": "5-创建笔记",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"我的第一篇笔记\", \"content\": \"这是笔记内容\", \"tags\": \"学习,Java\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/note",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "note"]
+        }
+      }
+    },
+    {
+      "name": "6-查询笔记列表",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/note/list?pageNum=1&pageSize=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "note", "list"],
+          "query": [
+            {"key": "pageNum", "value": "1"},
+            {"key": "pageSize", "value": "10"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "7-搜索笔记",
+      "request": {
+        "method": "GET",
+        "header": [
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/note/search?keyword=笔记&pageNum=1&pageSize=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "note", "search"],
+          "query": [
+            {"key": "keyword", "value": "笔记"},
+            {"key": "pageNum", "value": "1"},
+            {"key": "pageSize", "value": "10"}
+          ]
+        }
+      }
+    }
+  ]
+}
