@@ -47,13 +47,29 @@ export function getUserInfo() {
 }
 
 /**
- * 修改密码（示例，后端暂未实现）
+ * 更新用户信息
+ * @param {object} data
+ * @param {string} data.username - 用户名（可选）
+ * @param {string} data.email - 邮箱（可选）
+ * @returns {Promise}
+ */
+export function updateUserInfo(data) {
+  return request({
+    url: '/user/info',
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 修改密码
  * @param {object} data
  * @param {string} data.oldPassword - 旧密码
  * @param {string} data.newPassword - 新密码
+ * @param {string} data.confirmPassword - 确认密码
  * @returns {Promise}
  */
-export function changePassword(data) {
+export function updatePassword(data) {
   return request({
     url: '/user/password',
     method: 'put',

@@ -174,4 +174,35 @@ const goBack = () => {
   overflow-y: auto;
   padding: 24px;
 }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 12px 16px;
+  }
+
+  .edit-container {
+    padding: 16px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .edit-container {
+    padding: 12px;
+  }
+}
 </style>

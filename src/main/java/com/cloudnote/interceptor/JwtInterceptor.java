@@ -1,5 +1,6 @@
 package com.cloudnote.interceptor;
 
+import com.cloudnote.context.UserContext;
 import com.cloudnote.util.JwtUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,10 +36,17 @@ public class JwtInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // 将用户ID存入请求属性
+        // 将用户ID存入请求属性和上下文
         Integer userId = jwtUtil.getUserIdFromToken(token);
         request.setAttribute("userId", userId);
+        UserContext.setUserId(userId);
 
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // 请求完成后清除上下文
+        UserContext.clear();
     }
 }

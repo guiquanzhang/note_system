@@ -142,7 +142,7 @@ const handleMenuSelect = (index) => {
 const handleCommand = (command) => {
   switch (command) {
     case 'profile':
-      ElMessage.info('个人信息功能开发中...')
+      router.push('/profile')
       break
     case 'settings':
       ElMessage.info('设置功能开发中...')
@@ -310,5 +310,52 @@ const selectCategory = (categoryId) => {
 .main-content {
   background: #f5f7fa;
   overflow-y: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  /* 顶部导航栏 */
+  .main-header {
+    padding: 0 16px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+  }
+
+  .username {
+    display: none; /* 移动端隐藏用户名 */
+  }
+
+  /* 左侧边栏 */
+  .main-aside {
+    position: fixed;
+    left: -240px;
+    top: 60px;
+    bottom: 0;
+    width: 240px;
+    z-index: 999;
+    transition: left 0.3s;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .main-aside.show {
+    left: 0;
+  }
+
+  /* 主体内容区占满宽度 */
+  .main-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 16px;
+  }
+
+  .header-left .el-icon {
+    font-size: 24px;
+  }
 }
 </style>

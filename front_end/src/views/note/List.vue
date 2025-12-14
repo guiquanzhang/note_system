@@ -294,4 +294,44 @@ const formatTime = (time) => {
   justify-content: center;
   margin-top: 24px;
 }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .note-list-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .page-header h2 {
+    font-size: 20px;
+  }
+
+  .note-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .pagination {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .note-list-page {
+    padding: 12px;
+  }
+
+  .page-header h2 {
+    font-size: 18px;
+  }
+
+  .search-bar {
+    margin-bottom: 16px;
+  }
+}
 </style>

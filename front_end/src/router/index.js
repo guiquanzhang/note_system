@@ -69,6 +69,21 @@ const routes = [
     ]
   },
 
+  // 用户中心路由
+  {
+    path: '/profile',
+    component: () => import('@/layout/MainLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'Profile',
+        component: () => import('@/views/user/Profile.vue'),
+        meta: { title: '个人信息' }
+      }
+    ]
+  },
+
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

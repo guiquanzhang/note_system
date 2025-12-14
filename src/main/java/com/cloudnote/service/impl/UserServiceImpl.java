@@ -91,4 +91,70 @@ public class UserServiceImpl implements UserService {
         log.info("登录成功 - 用户: {}, Token: {}", user.getUsername(), token);
         return loginVO;
     }
+
+    @Override
+    public com.cloudnote.vo.UserInfoVO getUserInfo(Integer userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        com.cloudnote.vo.UserInfoVO userInfoVO = new com.cloudnote.vo.UserInfoVO();
+        BeanUtils.copyProperties(user, userInfoVO);
+        return userInfoVO;
+    }
+
+    @Override
+    public void updateUserInfo(Integer userId, com.cloudnote.dto.UpdateUserInfoDTO updateUserInfoDTO) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        // 如果要修改用户名，检查用户名是否已存在
+        if (updateUserInfoDTO.getUsername() != null && 
+            !updateUserInfoDTO.getUsername().equals(user.getUsername())) {
+            LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(User::getUsername, updateUserInfoDTO.getUsername());
+            User existUser = userMapper.selectOne(wrapper);
+            if (existUser != null) {
+                throw new RuntimeException("用户名已存在");
+            }
+            user.setUsername(updateUserInfoDTO.getUsername());
+        }
+
+        // 更新邮箱
+        if (updateUserInfoDTO.getEmail() != null) {
+            user.setEmail(updateUserInfoDTO.getEmail());
+        }
+
+        userMapper.updateById(user);
+        log.info("用户信息更新成功 - 用户ID: {}", userId);
+    }
+
+    @Override
+    public void updatePassword(Integer userId, com.cloudnote.dto.UpdatePasswordDTO updatePasswordDTO) {
+        // 验证新密码和确认密码是否一致
+        if (!updatePasswordDTO.getNewPassword().equals(updatePasswordDTO.getConfirmPassword())) {
+            throw new RuntimeException("两次输入的密码不一致");
+        }
+
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        // 验证旧密码
+        boolean passwordMatch = BCrypt.checkpw(updatePasswordDTO.getOldPassword(), user.getPassword());
+        if (!passwordMatch) {
+            throw new RuntimeException("旧密码错误");
+        }
+
+        // 更新密码
+        String hashedPassword = BCrypt.hashpw(updatePasswordDTO.getNewPassword());
+        user.setPassword(hashedPassword);
+        userMapper.updateById(user);
+        
+        log.info("密码修改成功 - 用户ID: {}", userId);
+    }
 }
