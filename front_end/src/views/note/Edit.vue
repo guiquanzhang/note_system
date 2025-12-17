@@ -47,12 +47,16 @@
           />
         </el-form-item>
 
-        <el-form-item label="内容">
-          <el-input
-            v-model="noteForm.content"
-            type="textarea"
-            :rows="15"
+        <el-form-item label="内容" class="editor-form-item">
+          <QuillEditor
+            ref="quillEditorRef"
+            v-model:content="noteForm.content"
+            contentType="html"
+            theme="snow"
+            :toolbar="toolbarOptions"
             placeholder="请输入笔记内容..."
+            class="note-editor"
+            @ready="onEditorReady"
           />
         </el-form-item>
       </el-form>
@@ -66,6 +70,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useNoteStore, useCategoryStore } from '@/store'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
+import { QuillEditor } from '@vueup/vue-quill'
 
 const router = useRouter()
 const route = useRoute()
@@ -81,6 +86,9 @@ const isEditMode = !!noteId
 // 保存状态
 const saving = ref(false)
 
+// 编辑器引用
+const quillEditorRef = ref(null)
+
 // 笔记表单
 const noteForm = reactive({
   title: '',
@@ -88,6 +96,169 @@ const noteForm = reactive({
   categoryId: null,
   tags: ''
 })
+
+// Quill 编辑器工具栏配置
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],        // 加粗、斜体、下划线、删除线
+  ['blockquote', 'code-block'],                     // 引用、代码块
+  [{ 'header': 1 }, { 'header': 2 }],               // 标题
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],     // 有序列表、无序列表
+  [{ 'script': 'sub'}, { 'script': 'super' }],      // 下标、上标
+  [{ 'indent': '-1'}, { 'indent': '+1' }],          // 缩进
+  [{ 'direction': 'rtl' }],                         // 文本方向
+  [{ 'size': ['small', false, 'large', 'huge'] }],  // 字体大小
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],        // 标题级别
+  [{ 'color': [] }, { 'background': [] }],          // 字体颜色、背景颜色
+  [{ 'font': [] }],                                 // 字体
+  [{ 'align': [] }],                                // 对齐方式
+  ['clean'],                                        // 清除格式
+  ['link', 'image']                                 // 链接、图片
+]
+
+// 编辑器准备就绪
+const onEditorReady = (quill) => {
+  // 添加工具栏按钮的提示文字
+  addToolbarTooltips()
+  
+  // 自定义链接处理
+  const toolbar = quill.getModule('toolbar')
+  toolbar.addHandler('link', () => {
+    const range = quill.getSelection()
+    if (range) {
+      const currentLink = quill.getFormat(range).link
+      const url = prompt('请输入链接地址:', currentLink || 'https://')
+      if (url) {
+        quill.format('link', url)
+      }
+    } else {
+      ElMessage.warning('请先选择要添加链接的文字')
+    }
+  })
+  
+  // 自定义图片处理
+  toolbar.addHandler('image', () => {
+    selectImage(quill)
+  })
+}
+
+// 选择图片
+const selectImage = (quill) => {
+  // 创建一个隐藏的 input 元素
+  const input = document.createElement('input')
+  input.setAttribute('type', 'file')
+  input.setAttribute('accept', 'image/*')
+  input.style.display = 'none'
+  
+  input.onchange = async () => {
+    const file = input.files[0]
+    if (!file) return
+    
+    // 验证文件类型
+    if (!file.type.startsWith('image/')) {
+      ElMessage.error('请选择图片文件')
+      return
+    }
+    
+    // 验证文件大小（限制为 5MB）
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      ElMessage.error('图片大小不能超过 5MB')
+      return
+    }
+    
+    // 显示加载提示
+    const loading = ElMessage({
+      message: '正在上传图片...',
+      type: 'info',
+      duration: 0
+    })
+    
+    try {
+      // 读取文件并转换为 Base64
+      const base64 = await readFileAsBase64(file)
+      
+      // 插入图片到编辑器
+      const range = quill.getSelection(true)
+      quill.insertEmbed(range.index, 'image', base64)
+      quill.setSelection(range.index + 1)
+      
+      loading.close()
+      ElMessage.success('图片插入成功')
+    } catch (error) {
+      loading.close()
+      ElMessage.error('图片上传失败: ' + error.message)
+    }
+  }
+  
+  // 触发文件选择
+  document.body.appendChild(input)
+  input.click()
+  document.body.removeChild(input)
+}
+
+// 读取文件为 Base64
+const readFileAsBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => resolve(e.target.result)
+    reader.onerror = (error) => reject(error)
+    reader.readAsDataURL(file)
+  })
+}
+
+// 添加工具栏提示
+const addToolbarTooltips = () => {
+  setTimeout(() => {
+    const tooltips = {
+      '.ql-bold': '加粗 (Ctrl+B)',
+      '.ql-italic': '斜体 (Ctrl+I)',
+      '.ql-underline': '下划线 (Ctrl+U)',
+      '.ql-strike': '删除线',
+      '.ql-blockquote': '引用',
+      '.ql-code-block': '代码块',
+      '.ql-header[value="1"]': '一级标题',
+      '.ql-header[value="2"]': '二级标题',
+      '.ql-list[value="ordered"]': '有序列表（1.2.3.）',
+      '.ql-list[value="bullet"]': '无序列表（• • •）',
+      '.ql-script[value="sub"]': '下标',
+      '.ql-script[value="super"]': '上标',
+      '.ql-indent[value="-1"]': '减少缩进（需先创建列表）',
+      '.ql-indent[value="+1"]': '增加缩进（需先创建列表）',
+      '.ql-direction[value="rtl"]': '文本方向（从右到左）',
+      '.ql-size .ql-picker-label': '字体大小',
+      '.ql-size .ql-picker-item[data-value="small"]': '小号',
+      '.ql-size .ql-picker-item[data-value=""]': '正常',
+      '.ql-size .ql-picker-item[data-value="large"]': '大号',
+      '.ql-size .ql-picker-item[data-value="huge"]': '超大',
+      '.ql-header.ql-picker .ql-picker-label': '标题级别',
+      '.ql-header .ql-picker-item[data-value="1"]': '一级标题',
+      '.ql-header .ql-picker-item[data-value="2"]': '二级标题',
+      '.ql-header .ql-picker-item[data-value="3"]': '三级标题',
+      '.ql-header .ql-picker-item[data-value="4"]': '四级标题',
+      '.ql-header .ql-picker-item[data-value="5"]': '五级标题',
+      '.ql-header .ql-picker-item[data-value="6"]': '六级标题',
+      '.ql-header .ql-picker-item[data-value=""]': '正文',
+      '.ql-color .ql-picker-label': '字体颜色',
+      '.ql-background .ql-picker-label': '背景颜色',
+      '.ql-font .ql-picker-label': '字体',
+      '.ql-align .ql-picker-label': '对齐方式',
+      '.ql-align .ql-picker-item[data-value=""]': '左对齐',
+      '.ql-align .ql-picker-item[data-value="center"]': '居中对齐',
+      '.ql-align .ql-picker-item[data-value="right"]': '右对齐',
+      '.ql-align .ql-picker-item[data-value="justify"]': '两端对齐',
+      '.ql-clean': '清除格式',
+      '.ql-link': '插入链接',
+      '.ql-image': '插入图片（支持本地上传）'
+    }
+
+    Object.entries(tooltips).forEach(([selector, title]) => {
+      const elements = document.querySelectorAll(selector)
+      elements.forEach(el => {
+        el.setAttribute('title', title)
+      })
+    })
+  }, 100)
+}
 
 // 组件挂载
 onMounted(async () => {
@@ -175,6 +346,72 @@ const goBack = () => {
   padding: 24px;
 }
 
+/* Quill 编辑器样式调整 */
+.editor-form-item {
+  margin-bottom: 0;
+}
+
+.editor-form-item :deep(.el-form-item__content) {
+  display: block !important;
+  align-items: flex-start !important;
+}
+
+.note-editor {
+  width: 100%;
+}
+
+/* 强制覆盖 Quill 默认样式 */
+:deep(.ql-toolbar.ql-snow) {
+  border: 1px solid #dcdfe6 !important;
+  border-radius: 4px 4px 0 0 !important;
+  background: #fafafa !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+}
+
+/* 工具栏按钮提示样式 */
+:deep(.ql-toolbar button),
+:deep(.ql-toolbar .ql-picker-label) {
+  cursor: pointer;
+  position: relative;
+}
+
+:deep(.ql-toolbar button:hover),
+:deep(.ql-toolbar .ql-picker-label:hover) {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+:deep(.ql-container.ql-snow) {
+  border: 1px solid #dcdfe6 !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
+  font-size: 14px !important;
+  min-height: 400px !important;
+}
+
+:deep(.ql-editor) {
+  min-height: 400px !important;
+  line-height: 1.8 !important;
+  padding: 15px !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+:deep(.ql-editor.ql-blank::before) {
+  color: #c0c4cc !important;
+  font-style: normal !important;
+  left: 15px !important;
+  right: 15px !important;
+}
+
+:deep(.ql-editor p) {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .page-header {
@@ -187,6 +424,14 @@ const goBack = () => {
 
   .header-actions {
     gap: 8px;
+  }
+
+  .note-editor {
+    height: 400px;
+  }
+
+  :deep(.ql-editor) {
+    min-height: 300px;
   }
 }
 
@@ -203,6 +448,19 @@ const goBack = () => {
 
   .edit-container {
     padding: 12px;
+  }
+
+  .note-editor {
+    height: 350px;
+  }
+
+  :deep(.ql-editor) {
+    min-height: 250px;
+    padding: 12px;
+  }
+
+  :deep(.ql-toolbar) {
+    padding: 8px;
   }
 }
 </style>

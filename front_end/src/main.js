@@ -6,6 +6,9 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
 
+// 导入 Quill 编辑器样式
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 // 创建 Vue 应用实例
 const app = createApp(App)
 

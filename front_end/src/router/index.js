@@ -63,7 +63,7 @@ const routes = [
       {
         path: ':id',
         name: 'NoteDetail',
-        component: () => import('@/views/note/Edit.vue'),
+        component: () => import('@/views/note/Detail.vue'),
         meta: { title: '笔记详情' }
       }
     ]

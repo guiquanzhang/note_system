@@ -61,7 +61,7 @@
           </div>
 
           <div class="note-content">
-            {{ note.content || '暂无内容' }}
+            {{ stripHtml(note.content) || '暂无内容' }}
           </div>
 
           <div class="note-footer">
@@ -191,6 +191,14 @@ const getCategoryName = (categoryId) => {
 // 格式化时间
 const formatTime = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm')
+}
+
+// 去除 HTML 标签，用于内容预览
+const stripHtml = (html) => {
+  if (!html) return ''
+  const tmp = document.createElement('div')
+  tmp.innerHTML = html
+  return tmp.textContent || tmp.innerText || ''
 }
 </script>
 
