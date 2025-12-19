@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 public class UserInfoVO {
     private Integer userId;
     private String username;
+    private String nickname;
     private String email;
+    private String avatar;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -300,7 +300,11 @@ const stripHtml = (html) => {
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  align-items: center;
+  margin-top: 32px;
+  padding: 20px 0;
+  background: #fff;
+  border-radius: 8px;
 }
 
 /* 响应式设计 */

@@ -19,6 +19,8 @@ public class Note {
     private Integer userId;
     private Integer categoryId;
     private String tags;
+    private Integer deleted;
+    private LocalDateTime deletedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

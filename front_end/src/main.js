@@ -9,6 +9,12 @@ import router from './router'
 // 导入 Quill 编辑器样式
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
+// 导入 Element Plus 暗色主题
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
+// 导入自定义主题样式
+import './styles/theme.css'
+
 // 创建 Vue 应用实例
 const app = createApp(App)
 
@@ -27,5 +33,31 @@ app.use(ElementPlus)     // UI 组件库
 
 // 挂载应用
 app.mount('#app')
+
+// 初始化主题
+const initTheme = () => {
+  const theme = localStorage.getItem('theme') || 'light'
+  let actualTheme = theme
+  
+  if (theme === 'auto') {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    actualTheme = isDark ? 'dark' : 'light'
+  }
+  
+  const html = document.documentElement
+  html.classList.remove('dark', 'blue')
+  
+  if (actualTheme === 'dark') {
+    html.classList.add('dark')
+    html.style.colorScheme = 'dark'
+  } else if (actualTheme === 'blue') {
+    html.classList.add('blue')
+    html.style.colorScheme = 'dark'
+  } else {
+    html.style.colorScheme = 'light'
+  }
+}
+
+initTheme()
 
 console.log('CloudNote Frontend - 应用启动成功！')

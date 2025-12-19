@@ -15,6 +15,19 @@
             label-width="100px"
             class="profile-form"
           >
+            <!-- 头像 -->
+            <el-form-item label="头像">
+              <div class="avatar-upload">
+                <el-avatar :size="80" :src="getAvatarUrl(basicForm.avatar)" class="avatar-preview">
+                  <el-icon :size="40"><User /></el-icon>
+                </el-avatar>
+                <div class="avatar-actions" v-if="editingBasic">
+                  <el-button size="small" @click="selectAvatar">选择头像</el-button>
+                  <el-button size="small" @click="removeAvatar" v-if="basicForm.avatar">移除</el-button>
+                </div>
+              </div>
+            </el-form-item>
+
             <el-form-item label="用户ID">
               <el-input v-model="userInfo.userId" disabled />
             </el-form-item>
@@ -24,6 +37,16 @@
                 v-model="basicForm.username"
                 placeholder="请输入用户名"
                 :disabled="!editingBasic"
+              />
+            </el-form-item>
+
+            <el-form-item label="昵称" prop="nickname">
+              <el-input
+                v-model="basicForm.nickname"
+                placeholder="请输入昵称（可选）"
+                :disabled="!editingBasic"
+                maxlength="20"
+                show-word-limit
               />
             </el-form-item>
 
@@ -162,8 +185,9 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { getUserInfo, updateUserInfo, updatePassword } from '@/api/user'
+import { uploadAvatar } from '@/api/file'
 import { ElMessage } from 'element-plus'
-import { Lock, Message } from '@element-plus/icons-vue'
+import { Lock, Message, User } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
 // 当前激活的标签页
@@ -181,7 +205,9 @@ const userInfo = reactive({
 // 基本信息表单
 const basicForm = reactive({
   username: '',
-  email: ''
+  nickname: '',
+  email: '',
+  avatar: ''
 })
 
 // 是否正在编辑基本信息
@@ -199,10 +225,15 @@ const basicRules = {
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
   ],
+  nickname: [
+    { max: 20, message: '昵称长度不能超过 20 个字符', trigger: 'blur' }
+  ],
   email: [
     { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
   ]
 }
+
+
 
 // 密码表单
 const passwordForm = reactive({
@@ -249,10 +280,82 @@ const loadUserInfo = async () => {
     const data = await getUserInfo()
     Object.assign(userInfo, data)
     basicForm.username = data.username
+    basicForm.nickname = data.nickname || ''
     basicForm.email = data.email || ''
+    basicForm.avatar = data.avatar || ''
   } catch (error) {
     ElMessage.error('加载用户信息失败')
   }
+}
+
+// 选择头像
+const selectAvatar = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'image/*'
+  
+  input.onchange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
+    // 验证文件类型
+    if (!file.type.startsWith('image/')) {
+      ElMessage.error('请选择图片文件')
+      return
+    }
+    
+    // 验证文件大小（限制为 5MB）
+    if (file.size > 5 * 1024 * 1024) {
+      ElMessage.error('头像大小不能超过 5MB')
+      return
+    }
+    
+    try {
+      // 显示上传提示
+      const loading = ElMessage({
+        message: '正在上传图片...',
+        type: 'info',
+        duration: 0
+      })
+      
+      // 上传图片到服务器
+      const imageUrl = await uploadAvatar(file)
+      
+      // 保存图片URL
+      basicForm.avatar = imageUrl
+      
+      // 确保表单其他字段有值（如果用户没有点击编辑按钮）
+      if (!basicForm.username) {
+        basicForm.username = userInfo.username
+        basicForm.nickname = userInfo.nickname || ''
+        basicForm.email = userInfo.email || ''
+      }
+      
+      loading.close()
+      ElMessage.success('头像已上传，请点击保存按钮')
+    } catch (error) {
+      ElMessage.error('上传图片失败: ' + (error.message || '未知错误'))
+    }
+  }
+  
+  input.click()
+}
+
+// 移除头像
+const removeAvatar = () => {
+  basicForm.avatar = ''
+  ElMessage.success('头像已移除，请点击保存按钮')
+}
+
+// 获取头像完整URL
+const getAvatarUrl = (avatar) => {
+  if (!avatar) return ''
+  // 如果是完整URL，直接返回
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+    return avatar
+  }
+  // 如果是相对路径，拼接后端地址（注意：后端有 /api 前缀）
+  return `http://localhost:8080/api${avatar}`
 }
 
 // 开始编辑基本信息
@@ -264,7 +367,9 @@ const startEditBasic = () => {
 const cancelEditBasic = () => {
   editingBasic.value = false
   basicForm.username = userInfo.username
+  basicForm.nickname = userInfo.nickname || ''
   basicForm.email = userInfo.email || ''
+  basicForm.avatar = userInfo.avatar || ''
   basicFormRef.value?.clearValidate()
 }
 
@@ -330,6 +435,8 @@ const resetPasswordForm = () => {
 const formatTime = (time) => {
   return time ? dayjs(time).format('YYYY-MM-DD HH:mm:ss') : '-'
 }
+
+
 </script>
 
 <style scoped>
@@ -410,6 +517,24 @@ const formatTime = (time) => {
 .item-desc {
   font-size: 14px;
   color: #909399;
+}
+
+/* 头像上传 */
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar-preview {
+  background: #f5f7fa;
+  border: 2px dashed #dcdfe6;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* 响应式设计 */

@@ -123,9 +123,19 @@ public class UserServiceImpl implements UserService {
             user.setUsername(updateUserInfoDTO.getUsername());
         }
 
+        // 更新昵称
+        if (updateUserInfoDTO.getNickname() != null) {
+            user.setNickname(updateUserInfoDTO.getNickname());
+        }
+
         // 更新邮箱
         if (updateUserInfoDTO.getEmail() != null) {
             user.setEmail(updateUserInfoDTO.getEmail());
+        }
+
+        // 更新头像
+        if (updateUserInfoDTO.getAvatar() != null) {
+            user.setAvatar(updateUserInfoDTO.getAvatar());
         }
 
         userMapper.updateById(user);

@@ -1,0 +1,175 @@
+/* 全局主题样式 */
+
+/* 亮色主题（默认） */
+:root {
+  --bg-color: #f5f7fa;
+  --card-bg-color: #ffffff;
+  --text-color: #303133;
+  --text-color-secondary: #606266;
+  --border-color: #e4e7ed;
+}
+
+/* 暗色主题 */
+html.dark {
+  color-scheme: dark;
+  
+  --bg-color: #1a1a1a;
+  --card-bg-color: #2c2c2c;
+  --text-color: #e5e5e5;
+  --text-color-secondary: #a8a8a8;
+  --border-color: #3c3c3c;
+}
+
+/* 应用主题变量 */
+html.dark body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+html.dark .main-layout {
+  background-color: var(--bg-color);
+}
+
+html.dark .main-header {
+  background-color: var(--card-bg-color);
+  border-bottom-color: var(--border-color);
+}
+
+html.dark .main-aside {
+  background-color: var(--card-bg-color);
+  border-right-color: var(--border-color);
+}
+
+html.dark .main-content {
+  background-color: var(--bg-color);
+}
+
+html.dark .note-card {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+html.dark .profile-card {
+  background-color: var(--card-bg-color);
+}
+
+html.dark .logo-text {
+  color: var(--text-color);
+}
+
+html.dark .username {
+  color: var(--text-color-secondary);
+}
+
+html.dark .category-item {
+  color: var(--text-color-secondary);
+}
+
+html.dark .category-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+html.dark .note-title {
+  color: var(--text-color);
+}
+
+html.dark .note-content {
+  color: var(--text-color-secondary);
+}
+
+html.dark .note-footer {
+  border-top-color: var(--border-color);
+}
+
+html.dark .security-item {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+html.dark .security-item:hover {
+  border-color: var(--el-color-primary);
+}
+
+/* 护眼蓝主题 */
+html.blue {
+  color-scheme: dark;
+  
+  --bg-color: #1a2332;
+  --card-bg-color: #243447;
+  --text-color: #d4e4f7;
+  --text-color-secondary: #9db4d0;
+  --border-color: #2d4159;
+}
+
+html.blue body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+html.blue .main-layout {
+  background-color: var(--bg-color);
+}
+
+html.blue .main-header {
+  background-color: var(--card-bg-color);
+  border-bottom-color: var(--border-color);
+}
+
+html.blue .main-aside {
+  background-color: var(--card-bg-color);
+  border-right-color: var(--border-color);
+}
+
+html.blue .main-content {
+  background-color: var(--bg-color);
+}
+
+html.blue .note-card {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+html.blue .profile-card {
+  background-color: var(--card-bg-color);
+}
+
+html.blue .logo-text {
+  color: var(--text-color);
+}
+
+html.blue .username {
+  color: var(--text-color-secondary);
+}
+
+html.blue .category-item {
+  color: var(--text-color-secondary);
+}
+
+html.blue .category-item:hover {
+  background-color: rgba(100, 150, 200, 0.1);
+}
+
+html.blue .note-title {
+  color: var(--text-color);
+}
+
+html.blue .note-content {
+  color: var(--text-color-secondary);
+}
+
+html.blue .note-footer {
+  border-top-color: var(--border-color);
+}
+
+html.blue .security-item {
+  background-color: var(--card-bg-color);
+  border-color: var(--border-color);
+}
+
+html.blue .security-item:hover {
+  border-color: var(--el-color-primary);
+}
+
+html.blue .pagination {
+  background-color: var(--card-bg-color);
+}

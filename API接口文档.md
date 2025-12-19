@@ -114,6 +114,130 @@
 
 ---
 
+### 1.3 获取用户信息
+
+**接口地址**: `GET /user/info`
+
+**是否需要认证**: 是
+
+**请求头**:
+```
+Authorization: Bearer {token}
+```
+
+**成功响应**:
+```json
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "userId": 1,
+    "username": "testuser",
+    "nickname": "测试用户",
+    "email": "test@example.com",
+    "avatar": "data:image/png;base64,iVBORw0KG...",
+    "createdAt": "2024-12-14T00:00:00",
+    "updatedAt": "2024-12-14T00:00:00"
+  }
+}
+```
+
+---
+
+### 1.4 更新用户信息
+
+**接口地址**: `PUT /user/info`
+
+**是否需要认证**: 是
+
+**请求头**:
+```
+Authorization: Bearer {token}
+```
+
+**请求参数**:
+```json
+{
+  "username": "newusername",
+  "nickname": "新昵称",
+  "email": "newemail@example.com",
+  "avatar": "data:image/png;base64,iVBORw0KG..."
+}
+```
+
+**参数说明**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| username | String | 否 | 用户名，3-20个字符 |
+| nickname | String | 否 | 昵称，最多50个字符 |
+| email | String | 否 | 邮箱地址 |
+| avatar | String | 否 | 头像（Base64或URL） |
+
+**成功响应**:
+```json
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": null
+}
+```
+
+**错误响应**:
+```json
+{
+  "code": 500,
+  "message": "用户名已存在",
+  "data": null
+}
+```
+
+---
+
+### 1.5 修改密码
+
+**接口地址**: `PUT /user/password`
+
+**是否需要认证**: 是
+
+**请求头**:
+```
+Authorization: Bearer {token}
+```
+
+**请求参数**:
+```json
+{
+  "oldPassword": "123456",
+  "newPassword": "654321"
+}
+```
+
+**参数说明**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| oldPassword | String | 是 | 旧密码 |
+| newPassword | String | 是 | 新密码，6-20个字符 |
+
+**成功响应**:
+```json
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": null
+}
+```
+
+**错误响应**:
+```json
+{
+  "code": 500,
+  "message": "旧密码错误",
+  "data": null
+}
+```
+
+---
+
 ## 2. 笔记管理模块
 
 ### 2.1 创建笔记
@@ -558,8 +682,10 @@ curl -X GET "http://localhost:8080/api/note/list?pageNum=1&pageSize=10" \
 |------|------|------|
 | user_id | INT | 主键 |
 | username | VARCHAR(100) | 用户名 |
+| nickname | VARCHAR(50) | 昵称 |
 | password | VARCHAR(255) | 密码（加密） |
 | email | VARCHAR(100) | 邮箱 |
+| avatar | TEXT | 头像（Base64或URL） |
 | created_at | TIMESTAMP | 创建时间 |
 | updated_at | TIMESTAMP | 更新时间 |
 
@@ -572,6 +698,8 @@ curl -X GET "http://localhost:8080/api/note/list?pageNum=1&pageSize=10" \
 | user_id | INT | 用户ID |
 | category_id | INT | 分类ID |
 | tags | VARCHAR(255) | 标签 |
+| deleted | TINYINT | 是否删除（0=正常，1=已删除） |
+| deleted_at | TIMESTAMP | 删除时间 |
 | created_at | TIMESTAMP | 创建时间 |
 | updated_at | TIMESTAMP | 更新时间 |
 

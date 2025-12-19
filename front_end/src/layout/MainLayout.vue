@@ -36,6 +36,9 @@
       </div>
     </el-header>
 
+    <!-- 设置对话框 -->
+    <SettingsDialog v-model="showSettings" />
+
     <!-- 主体内容区 -->
     <el-container class="main-container">
       <!-- 左侧边栏 -->
@@ -119,6 +122,7 @@ import {
   Search,
   Plus
 } from '@element-plus/icons-vue'
+import SettingsDialog from '@/components/SettingsDialog.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -127,6 +131,9 @@ const categoryStore = useCategoryStore()
 
 // 当前激活的菜单
 const activeMenu = computed(() => route.path)
+
+// 显示设置对话框
+const showSettings = ref(false)
 
 // 组件挂载时加载分类列表
 onMounted(() => {
@@ -145,7 +152,7 @@ const handleCommand = (command) => {
       router.push('/profile')
       break
     case 'settings':
-      ElMessage.info('设置功能开发中...')
+      showSettings.value = true
       break
     case 'logout':
       handleLogout()
