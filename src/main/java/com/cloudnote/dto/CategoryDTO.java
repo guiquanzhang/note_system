@@ -1,7 +1,7 @@
 package com.cloudnote.dto;
 
 import lombok.Data;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;   
 
 /**
  * 分类请求DTO
