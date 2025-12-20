@@ -2,9 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <el-icon :size="48" color="#409EFF" class="header-icon">
-          <Document />
-        </el-icon>
+        <img src="/logo.svg" alt="CloudNote Logo" class="header-logo" />
         <h2>欢迎回来</h2>
         <p>登录您的云笔记账号</p>
       </div>
@@ -137,7 +135,9 @@ const goToRegister = () => {
   margin-bottom: 40px;
 }
 
-.header-icon {
+.header-logo {
+  width: 120px;
+  height: 120px;
   margin-bottom: 16px;
   animation: bounce 1s ease-in-out;
 }

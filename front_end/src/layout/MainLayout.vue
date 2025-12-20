@@ -1,23 +1,25 @@
 <template>
   <div class="main-layout">
     <!-- 顶部导航栏 -->
-    <el-header class="main-header">
-      <div class="header-left">
-        <el-icon :size="28" color="#409EFF">
-          <Document />
-        </el-icon>
+    <el-header class="main-header glass-navbar">
+      <div class="header-left fade-in-up">
+        <img src="/logo.svg" alt="CloudNote" class="header-logo" />
         <span class="logo-text">云笔记</span>
       </div>
 
-      <div class="header-right">
+      <div class="header-right fade-in-up-delay-1">
         <el-dropdown @command="handleCommand">
-          <div class="user-info">
-            <el-avatar :size="36" :icon="UserFilled" />
+          <div class="user-info hover-lift active-scale">
+            <el-avatar 
+              :size="36" 
+              :src="getAvatarUrl(userStore.avatar)" 
+              :icon="userStore.avatar ? undefined : UserFilled" 
+            />
             <span class="username">{{ userStore.username }}</span>
             <el-icon><ArrowDown /></el-icon>
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
+            <el-dropdown-menu class="glass-card">
               <el-dropdown-item command="profile">
                 <el-icon><User /></el-icon>
                 个人信息
@@ -42,25 +44,35 @@
     <!-- 主体内容区 -->
     <el-container class="main-container">
       <!-- 左侧边栏 -->
-      <el-aside width="240px" class="main-aside">
+      <el-aside width="240px" class="main-aside glass-sidebar custom-scrollbar smooth-scroll">
         <el-menu
           :default-active="activeMenu"
           class="aside-menu"
           @select="handleMenuSelect"
         >
-          <el-menu-item index="/notes">
+          <el-menu-item index="/notes" class="fade-in-up">
             <el-icon><Document /></el-icon>
             <span>我的笔记</span>
           </el-menu-item>
           
-          <el-menu-item index="/categories">
+          <el-menu-item index="/categories" class="fade-in-up-delay-1">
             <el-icon><Folder /></el-icon>
             <span>分类管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/search">
+          <el-menu-item index="/tags" class="fade-in-up-delay-2">
+            <el-icon><PriceTag /></el-icon>
+            <span>标签管理</span>
+          </el-menu-item>
+
+          <el-menu-item index="/search" class="fade-in-up-delay-3">
             <el-icon><Search /></el-icon>
             <span>搜索笔记</span>
+          </el-menu-item>
+
+          <el-menu-item index="/notes/trash" class="fade-in-up-delay-3">
+            <el-icon><Delete /></el-icon>
+            <span>回收站</span>
           </el-menu-item>
         </el-menu>
 
@@ -99,8 +111,12 @@
       </el-aside>
 
       <!-- 右侧内容区 -->
-      <el-main class="main-content">
-        <router-view />
+      <el-main class="main-content custom-scrollbar smooth-scroll">
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </el-main>
     </el-container>
   </div>
@@ -110,6 +126,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore, useCategoryStore } from '@/store'
+import { getAvatarUrl } from '@/utils/avatar'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import {
   Document,
@@ -120,7 +137,9 @@ import {
   SwitchButton,
   Folder,
   Search,
-  Plus
+  Plus,
+  Delete,
+  PriceTag
 } from '@element-plus/icons-vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 
@@ -216,6 +235,16 @@ const selectCategory = (categoryId) => {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.header-logo {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s;
+}
+
+.header-logo:hover {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .logo-text {
@@ -317,6 +346,7 @@ const selectCategory = (categoryId) => {
 .main-content {
   background: #f5f7fa;
   overflow-y: auto;
+  padding: 0;
 }
 
 /* 响应式设计 */

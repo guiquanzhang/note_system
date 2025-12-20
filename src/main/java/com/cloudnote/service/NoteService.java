@@ -38,4 +38,24 @@ public interface NoteService {
      * 搜索笔记
      */
     Page<Note> searchNotes(Integer userId, String keyword, Integer pageNum, Integer pageSize);
+    
+    /**
+     * 获取回收站笔记列表
+     */
+    Page<Note> getDeletedNotes(Integer userId, Integer pageNum, Integer pageSize);
+    
+    /**
+     * 恢复笔记
+     */
+    void restoreNote(Integer noteId, Integer userId);
+    
+    /**
+     * 永久删除笔记
+     */
+    void permanentlyDeleteNote(Integer noteId, Integer userId);
+    
+    /**
+     * 清空回收站
+     */
+    void emptyTrash(Integer userId);
 }

@@ -27,6 +27,9 @@ export const useUserStore = defineStore('user', {
     // 获取邮箱
     email: (state) => state.userInfo?.email || '',
     
+    // 获取头像
+    avatar: (state) => state.userInfo?.avatar || '',
+    
     // 是否已登录
     isAuthenticated: (state) => state.isLoggedIn
   },
@@ -49,7 +52,8 @@ export const useUserStore = defineStore('user', {
         this.userInfo = {
           userId: data.userId,
           username: data.username,
-          email: data.email
+          email: data.email,
+          avatar: data.avatar || ''
         }
         auth.setUserInfo(this.userInfo)
         

@@ -15,6 +15,12 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 // 导入自定义主题样式
 import './styles/theme.css'
 
+// 导入动画效果
+import './styles/animations.css'
+
+// 导入毛玻璃效果
+import './styles/glassmorphism.css'
+
 // 创建 Vue 应用实例
 const app = createApp(App)
 

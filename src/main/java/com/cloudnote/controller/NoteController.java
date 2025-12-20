@@ -65,4 +65,44 @@ public class NoteController {
         Page<Note> page = noteService.searchNotes(userId, keyword, pageNum, pageSize);
         return Result.success(page);
     }
+
+    /**
+     * 获取回收站笔记列表
+     */
+    @GetMapping("/trash")
+    public Result<Page<Note>> getDeletedNotes(@RequestAttribute Integer userId,
+                                               @RequestParam(defaultValue = "1") Integer pageNum,
+                                               @RequestParam(defaultValue = "10") Integer pageSize) {
+        Page<Note> page = noteService.getDeletedNotes(userId, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 恢复笔记
+     */
+    @PutMapping("/{noteId}/restore")
+    public Result<Void> restoreNote(@PathVariable Integer noteId,
+                                     @RequestAttribute Integer userId) {
+        noteService.restoreNote(noteId, userId);
+        return Result.success();
+    }
+
+    /**
+     * 永久删除笔记
+     */
+    @DeleteMapping("/{noteId}/permanent")
+    public Result<Void> permanentlyDeleteNote(@PathVariable Integer noteId,
+                                               @RequestAttribute Integer userId) {
+        noteService.permanentlyDeleteNote(noteId, userId);
+        return Result.success();
+    }
+
+    /**
+     * 清空回收站
+     */
+    @DeleteMapping("/trash/empty")
+    public Result<Void> emptyTrash(@RequestAttribute Integer userId) {
+        noteService.emptyTrash(userId);
+        return Result.success();
+    }
 }

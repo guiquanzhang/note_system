@@ -11,4 +11,5 @@ public class LoginVO {
     private Integer userId;
     private String username;
     private String email;
+    private String avatar;
 }

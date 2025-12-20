@@ -82,6 +82,58 @@ public class FileController {
     }
 
     /**
+     * 上传笔记图片
+     */
+    @PostMapping("/upload/note-image")
+    public Result<String> uploadNoteImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.error("请选择文件");
+        }
+
+        // 验证文件类型
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return Result.error("只能上传图片文件");
+        }
+
+        // 验证文件大小（5MB）
+        long maxSize = 5 * 1024 * 1024;
+        if (file.getSize() > maxSize) {
+            return Result.error("文件大小不能超过 5MB");
+        }
+
+        try {
+            // 创建上传目录
+            String imageDir = uploadPath + File.separator + "notes";
+            File dir = new File(imageDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // 生成唯一文件名
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            String filename = UUID.randomUUID().toString() + extension;
+
+            // 保存文件
+            Path filePath = Paths.get(imageDir, filename);
+            Files.write(filePath, file.getBytes());
+
+            // 返回文件访问URL
+            String fileUrl = accessUrl + "/notes/" + filename;
+            log.info("笔记图片上传成功: {}", fileUrl);
+
+            return Result.success(fileUrl);
+        } catch (IOException e) {
+            log.error("笔记图片上传失败", e);
+            return Result.error("文件上传失败: " + e.getMessage());
+        }
+    }
+
+    /**
      * 删除文件
      */
     @DeleteMapping("/delete")

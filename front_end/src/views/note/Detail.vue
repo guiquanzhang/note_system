@@ -42,19 +42,20 @@
         </div>
 
         <!-- 笔记内容 -->
-        <div class="note-content ql-editor" v-html="note.content"></div>
+        <div class="note-content ql-editor" v-html="processedContent"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useNoteStore, useCategoryStore } from '@/store'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft, Edit, Delete, Clock } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
+import { processNoteContent } from '@/utils/content'
 
 const router = useRouter()
 const route = useRoute()
@@ -64,6 +65,17 @@ const categoryStore = useCategoryStore()
 const noteId = route.params.id
 const loading = ref(false)
 const note = ref(null)
+
+// 处理后的笔记内容（图片 URL 转换为完整路径）
+const processedContent = computed(() => {
+  if (!note.value) return ''
+  
+  console.log('原始内容:', note.value.content)
+  const processed = processNoteContent(note.value.content)
+  console.log('处理后内容:', processed)
+  
+  return processed
+})
 
 // 组件挂载
 onMounted(async () => {

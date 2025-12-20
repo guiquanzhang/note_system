@@ -89,3 +89,53 @@ export function searchNotes(params) {
     params
   })
 }
+
+/**
+ * 获取回收站笔记列表
+ * @param {object} params - 查询参数
+ * @param {number} params.pageNum - 页码
+ * @param {number} params.pageSize - 每页数量
+ * @returns {Promise<object>}
+ */
+export function getDeletedNotes(params) {
+  return request({
+    url: '/note/trash',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 恢复笔记
+ * @param {number} noteId - 笔记ID
+ * @returns {Promise}
+ */
+export function restoreNote(noteId) {
+  return request({
+    url: `/note/${noteId}/restore`,
+    method: 'put'
+  })
+}
+
+/**
+ * 永久删除笔记
+ * @param {number} noteId - 笔记ID
+ * @returns {Promise}
+ */
+export function permanentlyDeleteNote(noteId) {
+  return request({
+    url: `/note/${noteId}/permanent`,
+    method: 'delete'
+  })
+}
+
+/**
+ * 清空回收站
+ * @returns {Promise}
+ */
+export function emptyTrash() {
+  return request({
+    url: '/note/trash/empty',
+    method: 'delete'
+  })
+}

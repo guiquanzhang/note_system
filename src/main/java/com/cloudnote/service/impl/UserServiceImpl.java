@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
         loginVO.setUserId(user.getUserId());
         loginVO.setUsername(user.getUsername());
         loginVO.setEmail(user.getEmail());
+        loginVO.setAvatar(user.getAvatar());
 
         log.info("登录成功 - 用户: {}, Token: {}", user.getUsername(), token);
         return loginVO;

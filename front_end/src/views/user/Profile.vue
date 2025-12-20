@@ -186,9 +186,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { getUserInfo, updateUserInfo, updatePassword } from '@/api/user'
 import { uploadAvatar } from '@/api/file'
+import { useUserStore } from '@/store'
+import { getAvatarUrl } from '@/utils/avatar'
 import { ElMessage } from 'element-plus'
 import { Lock, Message, User } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
+
+const userStore = useUserStore()
 
 // 当前激活的标签页
 const activeTab = ref('basic')
@@ -347,17 +351,6 @@ const removeAvatar = () => {
   ElMessage.success('头像已移除，请点击保存按钮')
 }
 
-// 获取头像完整URL
-const getAvatarUrl = (avatar) => {
-  if (!avatar) return ''
-  // 如果是完整URL，直接返回
-  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
-    return avatar
-  }
-  // 如果是相对路径，拼接后端地址（注意：后端有 /api 前缀）
-  return `http://localhost:8080/api${avatar}`
-}
-
 // 开始编辑基本信息
 const startEditBasic = () => {
   editingBasic.value = true
@@ -386,6 +379,15 @@ const saveBasicInfo = async () => {
     ElMessage.success('信息更新成功')
     editingBasic.value = false
     await loadUserInfo()
+    
+    // 更新 userStore 中的用户信息
+    userStore.setUserInfo({
+      ...userStore.userInfo,
+      username: basicForm.username,
+      email: basicForm.email,
+      avatar: basicForm.avatar,
+      nickname: basicForm.nickname
+    })
   } catch (error) {
     if (error !== false) {
       console.error('更新失败:', error)

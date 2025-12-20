@@ -1,43 +1,53 @@
 <template>
   <div class="note-list-page">
     <!-- 顶部操作栏 -->
-    <div class="page-header">
-      <h2>我的笔记</h2>
-      <el-button type="primary" :icon="Plus" @click="createNote">
+    <div class="page-header fade-in-up">
+      <div>
+        <h2>我的笔记</h2>
+        <div v-if="filterTag" class="filter-tag">
+          <span>筛选标签：</span>
+          <el-tag closable @close="clearTagFilter" type="primary">
+            {{ filterTag }}
+          </el-tag>
+        </div>
+      </div>
+      <el-button type="primary" :icon="Plus" @click="createNote" class="hover-lift active-scale">
         新建笔记
       </el-button>
     </div>
 
     <!-- 搜索栏 -->
-    <div class="search-bar">
+    <div class="search-bar fade-in-up-delay-1">
       <el-input
         v-model="searchKeyword"
         placeholder="搜索笔记标题或内容..."
         :prefix-icon="Search"
         clearable
+        class="glass-input"
         @keyup.enter="handleSearch"
         @clear="handleClearSearch"
       >
         <template #append>
-          <el-button :icon="Search" @click="handleSearch">搜索</el-button>
+          <el-button :icon="Search" @click="handleSearch" class="active-scale">搜索</el-button>
         </template>
       </el-input>
     </div>
 
     <!-- 笔记列表 -->
-    <div v-loading="noteStore.loading" class="note-list">
+    <div v-loading="noteStore.loading" class="note-list fade-in-up-delay-2">
       <el-empty
         v-if="!noteStore.hasNotes && !noteStore.loading"
         description="还没有笔记，快去创建一个吧！"
       >
-        <el-button type="primary" @click="createNote">创建笔记</el-button>
+        <el-button type="primary" @click="createNote" class="bounce-in">创建笔记</el-button>
       </el-empty>
 
       <div v-else class="note-grid">
         <el-card
-          v-for="note in noteStore.noteList"
+          v-for="(note, index) in noteStore.noteList"
           :key="note.noteId"
-          class="note-card"
+          class="note-card glass-card hover-lift active-scale"
+          :class="`fade-in-up-delay-${Math.min(index % 6 + 1, 3)}`"
           shadow="hover"
           @click="viewNote(note.noteId)"
         >
@@ -65,9 +75,25 @@
           </div>
 
           <div class="note-footer">
-            <el-tag v-if="note.categoryId" size="small" type="info">
-              {{ getCategoryName(note.categoryId) }}
-            </el-tag>
+            <div class="footer-left">
+              <el-tag v-if="note.categoryId" size="small" type="info">
+                {{ getCategoryName(note.categoryId) }}
+              </el-tag>
+              <div v-if="note.tags" class="note-tags">
+                <el-tag
+                  v-for="tag in note.tags.split(',').slice(0, 3)"
+                  :key="tag"
+                  size="small"
+                  effect="plain"
+                  class="tag-item"
+                >
+                  {{ tag.trim() }}
+                </el-tag>
+                <el-tag v-if="note.tags.split(',').length > 3" size="small" type="info">
+                  +{{ note.tags.split(',').length - 3 }}
+                </el-tag>
+              </div>
+            </div>
             <span class="note-time">
               {{ formatTime(note.updatedAt) }}
             </span>
@@ -93,18 +119,22 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useNoteStore, useCategoryStore } from '@/store'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { Plus, Search, MoreFilled, Edit, Delete } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
 const router = useRouter()
+const route = useRoute()
 const noteStore = useNoteStore()
 const categoryStore = useCategoryStore()
 
 // 搜索关键词
 const searchKeyword = ref('')
+
+// 标签筛选
+const filterTag = ref(route.query.tag || '')
 
 // 分页
 const currentPage = ref(1)
@@ -193,6 +223,13 @@ const formatTime = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm')
 }
 
+// 清除标签筛选
+const clearTagFilter = () => {
+  filterTag.value = ''
+  router.push('/notes')
+  loadNotes()
+}
+
 // 去除 HTML 标签，用于内容预览
 const stripHtml = (html) => {
   if (!html) return ''
@@ -205,6 +242,8 @@ const stripHtml = (html) => {
 <style scoped>
 .note-list-page {
   padding: 24px;
+  min-height: calc(100vh - 60px); /* 减去 header 高度 */
+  background: transparent;
 }
 
 .page-header {
@@ -237,11 +276,8 @@ const stripHtml = (html) => {
 
 .note-card {
   cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.note-card:hover {
-  transform: translateY(-4px);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .note-card-header {
@@ -290,6 +326,39 @@ const stripHtml = (html) => {
   justify-content: space-between;
   padding-top: 12px;
   border-top: 1px solid #e4e7ed;
+  gap: 12px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.note-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag-item {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tag-item:hover {
+  transform: scale(1.05);
+}
+
+.filter-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #606266;
 }
 
 .note-time {

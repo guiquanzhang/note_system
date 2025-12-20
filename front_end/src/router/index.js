@@ -65,6 +65,27 @@ const routes = [
         name: 'NoteDetail',
         component: () => import('@/views/note/Detail.vue'),
         meta: { title: '笔记详情' }
+      },
+      {
+        path: 'trash',
+        name: 'Trash',
+        component: () => import('@/views/note/Trash.vue'),
+        meta: { title: '回收站' }
+      }
+    ]
+  },
+
+  // 搜索路由
+  {
+    path: '/search',
+    component: () => import('@/layout/MainLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'Search',
+        component: () => import('@/views/note/Search.vue'),
+        meta: { title: '搜索笔记' }
       }
     ]
   },
@@ -80,6 +101,36 @@ const routes = [
         name: 'Profile',
         component: () => import('@/views/user/Profile.vue'),
         meta: { title: '个人信息' }
+      }
+    ]
+  },
+
+  // 分类管理路由
+  {
+    path: '/categories',
+    component: () => import('@/layout/MainLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'CategoryList',
+        component: () => import('@/views/category/List.vue'),
+        meta: { title: '分类管理' }
+      }
+    ]
+  },
+
+  // 标签管理路由
+  {
+    path: '/tags',
+    component: () => import('@/layout/MainLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'TagList',
+        component: () => import('@/views/tag/List.vue'),
+        meta: { title: '标签管理' }
       }
     ]
   },
