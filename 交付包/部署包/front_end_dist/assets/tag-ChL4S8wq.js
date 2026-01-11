@@ -1,0 +1,1 @@
+import{r as e}from"./request-CqNpOxbT.js";const a=t=>e({url:"/tag",method:"POST",data:t}),s=t=>e({url:`/tag/${t}`,method:"DELETE"}),o=()=>e({url:"/tag/list",method:"GET"});export{a as c,s as d,o as g};

@@ -1,0 +1,1 @@
+const p=r=>{if(!r)return"";const a="/api";return r.replace(/<img([^>]*?)src=["'](?!http|data:|\/api)([^"']+)["']/gi,(s,e,t)=>{const i=t.startsWith("/")?t:"/"+t;return`<img${e}src="${a}${i}"`})};export{p};

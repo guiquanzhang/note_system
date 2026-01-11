@@ -1,0 +1,1 @@
+import{r as e}from"./request-CqNpOxbT.js";const r=t=>{const a=new FormData;return a.append("file",t),e({url:"/file/upload/avatar",method:"POST",data:a,headers:{"Content-Type":"multipart/form-data"}})},n=t=>{const a=new FormData;return a.append("file",t),e({url:"/file/upload/note-image",method:"POST",data:a,headers:{"Content-Type":"multipart/form-data"}})};export{r as a,n as u};

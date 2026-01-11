@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloudnote.mapper.NoteCommentMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.cloudnote.entity.NoteComment">
+        <id column="comment_id" property="commentId" />
+        <result column="note_id" property="noteId" />
+        <result column="user_id" property="userId" />
+        <result column="content" property="content" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        comment_id, note_id, user_id, content, created_at
+    </sql>
+
+    <!-- 自定义查询示例：查询笔记的所有评论（包含用户信息） -->
+    <select id="selectCommentWithUser" resultType="map">
+        SELECT 
+            nc.comment_id,
+            nc.content,
+            nc.created_at,
+            u.username,
+            u.email
+        FROM note_comment nc
+        LEFT JOIN user u ON nc.user_id = u.user_id
+        WHERE nc.note_id = #{noteId}
+        ORDER BY nc.created_at DESC
+    </select>
+
+</mapper>
