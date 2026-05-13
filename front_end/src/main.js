@@ -21,6 +21,9 @@ import './styles/animations.css'
 // 导入毛玻璃效果
 import './styles/glassmorphism.css'
 
+// 导入全局字体大小样式
+import './styles/font-size.css'
+
 // 创建 Vue 应用实例
 const app = createApp(App)
 
@@ -64,6 +67,16 @@ const initTheme = () => {
   }
 }
 
+// 初始化全局字体大小
+const initGlobalFontSize = () => {
+  const fontSize = localStorage.getItem('globalFontSize') || 'medium'
+  const html = document.documentElement
+  html.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge')
+  html.classList.add(`font-${fontSize}`)
+  console.log('全局字体大小已初始化:', fontSize)
+}
+
 initTheme()
+initGlobalFontSize()
 
 console.log('CloudNote Frontend - 应用启动成功！')

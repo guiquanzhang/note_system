@@ -135,6 +135,21 @@ const routes = [
     ]
   },
 
+  // AI 助手路由
+  {
+    path: '/ai-assistant',
+    component: () => import('@/layout/MainLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'AIAssistant',
+        component: () => import('@/views/ai/Assistant.vue'),
+        meta: { title: 'AI 助手' }
+      }
+    ]
+  },
+
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

@@ -61,6 +61,17 @@
         <div class="form-tip">编辑笔记时自动保存草稿</div>
       </el-form-item>
 
+      <!-- 全局字体大小 -->
+      <el-form-item label="全局字体大小">
+        <el-select v-model="settings.globalFontSize" @change="changeGlobalFontSize" style="width: 150px">
+          <el-option value="small" label="小号" />
+          <el-option value="medium" label="标准" />
+          <el-option value="large" label="大号" />
+          <el-option value="xlarge" label="超大号" />
+        </el-select>
+        <div class="form-tip">调整整个应用的字体大小</div>
+      </el-form-item>
+
       <!-- 编辑器字体大小 -->
       <el-form-item label="编辑器字体">
         <el-select v-model="settings.editorFontSize" @change="changeEditorFontSize" style="width: 150px">
@@ -69,6 +80,7 @@
           <el-option :value="16" label="大 (16px)" />
           <el-option :value="18" label="超大 (18px)" />
         </el-select>
+        <div class="form-tip">仅调整笔记编辑器的字体大小</div>
       </el-form-item>
     </el-form>
 
@@ -109,6 +121,7 @@ const settings = reactive({
   listLayout: localStorage.getItem('listLayout') || 'grid',
   pageSize: parseInt(localStorage.getItem('pageSize') || '20'),
   autoSave: localStorage.getItem('autoSave') === 'true',
+  globalFontSize: localStorage.getItem('globalFontSize') || 'medium',
   editorFontSize: parseInt(localStorage.getItem('editorFontSize') || '14')
 })
 
@@ -160,10 +173,43 @@ const changeAutoSave = (enabled) => {
   ElMessage.success(enabled ? '已开启自动保存' : '已关闭自动保存')
 }
 
+// 切换全局字体大小
+const changeGlobalFontSize = (size) => {
+  console.log('设置全局字体大小:', size)
+  localStorage.setItem('globalFontSize', size)
+  applyGlobalFontSize(size)
+  ElMessage.success(`全局字体大小已设置为${getFontSizeLabel(size)}`)
+}
+
+// 应用全局字体大小
+const applyGlobalFontSize = (size) => {
+  const html = document.documentElement
+  // 移除所有字体大小类
+  html.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge')
+  // 添加新的字体大小类
+  html.classList.add(`font-${size}`)
+  console.log('全局字体大小类已应用:', `font-${size}`)
+}
+
+// 获取字体大小标签
+const getFontSizeLabel = (size) => {
+  const labels = {
+    small: '小号',
+    medium: '标准',
+    large: '大号',
+    xlarge: '超大号'
+  }
+  return labels[size] || '标准'
+}
+
 // 切换编辑器字体大小
 const changeEditorFontSize = (size) => {
+  console.log('设置字体大小:', size)
   localStorage.setItem('editorFontSize', size.toString())
-  ElMessage.success('字体大小已设置，刷新页面后生效')
+  // 立即应用字体大小
+  document.documentElement.style.setProperty('--editor-font-size', `${size}px`)
+  console.log('CSS变量已设置:', document.documentElement.style.getPropertyValue('--editor-font-size'))
+  ElMessage.success(`字体大小已设置为 ${size}px`)
 }
 
 // 恢复默认设置
@@ -172,16 +218,21 @@ const resetSettings = () => {
   settings.listLayout = 'grid'
   settings.pageSize = 20
   settings.autoSave = false
+  settings.globalFontSize = 'medium'
   settings.editorFontSize = 14
   
   localStorage.setItem('theme', 'light')
   localStorage.setItem('listLayout', 'grid')
   localStorage.setItem('pageSize', '20')
   localStorage.setItem('autoSave', 'false')
+  localStorage.setItem('globalFontSize', 'medium')
   localStorage.setItem('editorFontSize', '14')
   
   applyTheme('light')
-  ElMessage.success('已恢复默认设置，刷新页面后完全生效')
+  applyGlobalFontSize('medium')
+  // 立即应用默认字体大小
+  document.documentElement.style.setProperty('--editor-font-size', '14px')
+  ElMessage.success('已恢复默认设置')
 }
 
 // 关闭对话框

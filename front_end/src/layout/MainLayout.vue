@@ -70,7 +70,12 @@
             <span>搜索笔记</span>
           </el-menu-item>
 
-          <el-menu-item index="/notes/trash" class="fade-in-up-delay-3">
+          <el-menu-item index="/ai-assistant" class="fade-in-up-delay-4">
+            <el-icon><ChatLineRound /></el-icon>
+            <span>AI 助手</span>
+          </el-menu-item>
+
+          <el-menu-item index="/notes/trash" class="fade-in-up-delay-5">
             <el-icon><Delete /></el-icon>
             <span>回收站</span>
           </el-menu-item>
@@ -139,7 +144,8 @@ import {
   Search,
   Plus,
   Delete,
-  PriceTag
+  PriceTag,
+  ChatLineRound
 } from '@element-plus/icons-vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 

@@ -33,12 +33,15 @@ CREATE TABLE `note` (
   `user_id` INT NOT NULL COMMENT '用户ID',
   `category_id` INT COMMENT '分类ID',
   `tags` VARCHAR(255) COMMENT '标签，逗号分隔',
+  `deleted` TINYINT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
+  `deleted_at` TIMESTAMP NULL COMMENT '删除时间',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE,
   FOREIGN KEY (`category_id`) REFERENCES `category`(`category_id`) ON DELETE SET NULL,
   INDEX idx_user_id (`user_id`),
   INDEX idx_category_id (`category_id`),
+  INDEX idx_deleted (`deleted`),
   FULLTEXT INDEX idx_title_content (`title`, `content`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='笔记表';
 

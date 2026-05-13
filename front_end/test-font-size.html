@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>字体大小测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .test-content {
+      border: 2px solid #409EFF;
+      padding: 20px;
+      margin: 20px 0;
+      font-size: var(--editor-font-size, 14px);
+      line-height: 1.8;
+    }
+    
+    .controls {
+      margin: 20px 0;
+    }
+    
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      background: #409EFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    
+    button:hover {
+      background: #66b1ff;
+    }
+    
+    .info {
+      background: #f0f9ff;
+      padding: 15px;
+      border-left: 4px solid #409EFF;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>字体大小设置测试</h1>
+  
+  <div class="info">
+    <strong>说明：</strong>
+    <ul>
+      <li>点击下面的按钮设置不同的字体大小</li>
+      <li>观察蓝色框内的文字大小变化</li>
+      <li>设置会保存到 localStorage</li>
+      <li>刷新页面后设置依然有效</li>
+    </ul>
+  </div>
+  
+  <div class="controls">
+    <button onclick="setFontSize(12)">小 (12px)</button>
+    <button onclick="setFontSize(14)">中 (14px)</button>
+    <button onclick="setFontSize(16)">大 (16px)</button>
+    <button onclick="setFontSize(18)">超大 (18px)</button>
+    <button onclick="showCurrentSize()">查看当前设置</button>
+  </div>
+  
+  <div class="test-content">
+    <h2>这是测试内容</h2>
+    <p>这是一段测试文字。The quick brown fox jumps over the lazy dog.</p>
+    <p>云笔记管理系统 - 字体大小设置功能测试</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <ul>
+      <li>列表项 1</li>
+      <li>列表项 2</li>
+      <li>列表项 3</li>
+    </ul>
+  </div>
+  
+  <div id="status" style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px;"></div>
+  
+  <script>
+    // 页面加载时应用保存的字体大小
+    function applyFontSize() {
+      const fontSize = localStorage.getItem('editorFontSize') || '14';
+      document.documentElement.style.setProperty('--editor-font-size', `${fontSize}px`);
+      updateStatus(`已应用字体大小: ${fontSize}px`);
+    }
+    
+    // 设置字体大小
+    function setFontSize(size) {
+      localStorage.setItem('editorFontSize', size.toString());
+      document.documentElement.style.setProperty('--editor-font-size', `${size}px`);
+      updateStatus(`字体大小已设置为: ${size}px`);
+    }
+    
+    // 显示当前设置
+    function showCurrentSize() {
+      const fontSize = localStorage.getItem('editorFontSize') || '14';
+      const cssValue = document.documentElement.style.getPropertyValue('--editor-font-size');
+      updateStatus(`
+        <strong>当前设置：</strong><br>
+        localStorage: ${fontSize}px<br>
+        CSS变量: ${cssValue || '未设置'}<br>
+        实际计算值: ${getComputedStyle(document.querySelector('.test-content')).fontSize}
+      `);
+    }
+    
+    // 更新状态显示
+    function updateStatus(message) {
+      document.getElementById('status').innerHTML = message;
+    }
+    
+    // 页面加载时初始化
+    applyFontSize();
+  </script>
+</body>
+</html>

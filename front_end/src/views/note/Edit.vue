@@ -299,6 +299,9 @@ const addToolbarTooltips = () => {
 
 // 组件挂载
 onMounted(async () => {
+  // 应用编辑器字体大小设置
+  applyEditorFontSize()
+  
   // 加载分类列表
   await categoryStore.fetchCategoryList()
   
@@ -310,6 +313,14 @@ onMounted(async () => {
     await loadNoteDetail()
   }
 })
+
+// 应用编辑器字体大小
+const applyEditorFontSize = () => {
+  const fontSize = localStorage.getItem('editorFontSize') || '14'
+  console.log('Edit页面 - 读取字体大小:', fontSize)
+  document.documentElement.style.setProperty('--editor-font-size', `${fontSize}px`)
+  console.log('Edit页面 - CSS变量已设置:', document.documentElement.style.getPropertyValue('--editor-font-size'))
+}
 
 // 加载标签列表
 const loadTags = async () => {
@@ -483,6 +494,7 @@ const goBack = () => {
   padding: 15px !important;
   text-align: left !important;
   direction: ltr !important;
+  font-size: var(--editor-font-size, 14px) !important;
 }
 
 :deep(.ql-editor.ql-blank::before) {

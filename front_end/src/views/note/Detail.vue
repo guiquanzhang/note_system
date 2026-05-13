@@ -79,8 +79,18 @@ const processedContent = computed(() => {
 
 // 组件挂载
 onMounted(async () => {
+  // 应用编辑器字体大小设置
+  applyEditorFontSize()
   await loadNoteDetail()
 })
+
+// 应用编辑器字体大小
+const applyEditorFontSize = () => {
+  const fontSize = localStorage.getItem('editorFontSize') || '14'
+  console.log('Detail页面 - 读取字体大小:', fontSize)
+  document.documentElement.style.setProperty('--editor-font-size', `${fontSize}px`)
+  console.log('Detail页面 - CSS变量已设置:', document.documentElement.style.getPropertyValue('--editor-font-size'))
+}
 
 // 加载笔记详情
 const loadNoteDetail = async () => {
@@ -201,7 +211,7 @@ const formatTime = (time) => {
 }
 
 .note-content {
-  font-size: 16px;
+  font-size: var(--editor-font-size, 16px);
   line-height: 1.8;
   color: #303133;
   padding: 24px 0;
@@ -267,7 +277,8 @@ const formatTime = (time) => {
   }
 
   .note-content {
-    font-size: 15px;
+    /* 保持使用 CSS 变量，不硬编码 */
+    font-size: var(--editor-font-size, 15px);
   }
 
   .header-actions {
@@ -296,7 +307,8 @@ const formatTime = (time) => {
   }
 
   .note-content {
-    font-size: 14px;
+    /* 保持使用 CSS 变量，不硬编码 */
+    font-size: var(--editor-font-size, 14px);
   }
 
   .note-meta {
