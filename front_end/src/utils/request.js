@@ -10,8 +10,8 @@ import router from '@/router'
 
 // 创建 axios 实例
 const request = axios.create({
-  baseURL: '/api', // 基础 URL，会被 Vite 代理到 http://localhost:8080/api
-  timeout: 10000,  // 请求超时时间 10 秒
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // 生产环境使用环境变量，开发环境使用代理
+  timeout: 30000,  // 请求超时时间 30 秒（Render免费版可能需要唤醒）
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   }

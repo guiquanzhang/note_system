@@ -5,6 +5,7 @@ import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: './', // 使用相对路径，支持直接打开index.html
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            width: 100%;
+        }
+        
+        .logo-item h2 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-item p {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .logo-display {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-box span {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .logo-large {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .logo-medium {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .logo-small {
+            width: 64px;
+            height: 64px;
+        }
+        
+        .logo-tiny {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .favicon-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .browser-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f1f3f4;
+            border-radius: 8px 8px 0 0;
+            font-size: 14px;
+            color: #5f6368;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .instructions strong {
+            color: #d63384;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .success h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .success p {
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 云笔记 Logo 预览</h1>
+        
+        <!-- 完整版 Logo -->
+        <div class="logo-item">
+            <h2>完整版 Logo (logo.svg)</h2>
+            <p>用于登录页、注册页、关于页面</p>
+            <div class="logo-display">
+                <div class="logo-box">
+                    <img src="/logo.svg" alt="Logo Large" class="logo-large">
+                    <span>200x200</span>
+                </div>
+                <div class="logo-box">
+                    <img src="/logo.svg" alt="Logo Medium" class="logo-medium">
+                    <span>120x120</span>
+                </div>
+                <div class="logo-box">
+                    <img src="/logo.svg" alt="Logo Small" class="logo-small">
+                    <span>64x64</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Favicon -->
+        <div class="logo-item">
+            <h2>Favicon (favicon.svg)</h2>
+            <p>用于浏览器标签页图标</p>
+            <div class="logo-display">
+                <div class="logo-box">
+                    <img src="/favicon.svg" alt="Favicon Large" class="logo-medium">
+                    <span>120x120</span>
+                </div>
+                <div class="logo-box">
+                    <img src="/favicon.svg" alt="Favicon Small" class="logo-small">
+                    <span>64x64</span>
+                </div>
+                <div class="logo-box">
+                    <img src="/favicon.svg" alt="Favicon Tiny" class="logo-tiny">
+                    <span>32x32</span>
+                </div>
+            </div>
+            <div class="favicon-preview">
+                <div class="browser-tab">
+                    <img src="/favicon.svg" alt="Favicon" style="width: 16px; height: 16px;">
+                    <span>云笔记 - CloudNote</span>
+                </div>
+                <span style="color: #999; font-size: 12px;">← 浏览器标签页效果预览</span>
+            </div>
+        </div>
+        
+        <!-- 成功提示 -->
+        <div class="success">
+            <h3>✅ Logo 文件已成功创建！</h3>
+            <p>如果你能看到上面的图标，说明 Logo 已经正常工作了。</p>
+        </div>
+        
+        <!-- 使用说明 -->
+        <div class="instructions">
+            <h3>📋 如何在主应用中看到新 Logo？</h3>
+            <ol>
+                <li>关闭这个测试页面</li>
+                <li>回到主应用页面（http://localhost:5173）</li>
+                <li>按 <strong>Ctrl + Shift + R</strong>（Windows）或 <strong>Cmd + Shift + R</strong>（Mac）强制刷新</li>
+                <li>查看浏览器标签页，应该能看到新图标</li>
+                <li>访问登录页面（/login），应该能看到大的 Logo</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
