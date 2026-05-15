@@ -128,10 +128,12 @@
     >
       <el-form label-width="120px">
         <el-form-item label="API 提供商">
-          <el-select v-model="settings.provider" style="width: 100%">
-            <el-option value="groq" label="Groq (推荐)" />
-            <el-option value="cohere" label="Cohere" />
-            <el-option value="huggingface" label="HuggingFace" />
+          <el-select v-model="settings.provider" @change="updateDefaultModel" style="width: 100%">
+            <el-option value="groq" label="🚀 Groq (推荐，免费)" />
+            <el-option value="zhipu" label="🇨🇳 智谱AI (国内，免费额度)" />
+            <el-option value="siliconflow" label="🇨🇳 硅基流动 (国内)" />
+            <el-option value="cohere" label="Cohere (免费额度)" />
+            <el-option value="huggingface" label="HuggingFace (免费)" />
           </el-select>
         </el-form-item>
 
@@ -188,6 +190,7 @@
                 <li>✅ 速度超快（1-3秒响应）</li>
                 <li>✅ 每天 14,400 次请求</li>
                 <li>✅ 支持中文，质量优秀</li>
+                <li>⚠️ 需要翻墙访问</li>
               </ul>
 
               <h3>获取步骤：</h3>
@@ -202,8 +205,68 @@
                 <li>粘贴到上面的设置中</li>
               </ol>
 
-              <el-alert type="success" :closable="false">
-                <strong>完全免费！</strong>每天 14,400 次请求，对于学习使用完全足够！
+              <el-alert type="success" :closable="false" style="margin-top: 16px;">
+                <strong>完全免费！</strong>每天 14,400 次请求，速度超快！
+              </el-alert>
+            </div>
+          </el-tab-pane>
+
+          <el-tab-pane label="🇨🇳 智谱AI (国内推荐)">
+            <div class="help-section">
+              <h3>为什么推荐智谱AI？</h3>
+              <ul>
+                <li>✅ 国内访问，无需翻墙</li>
+                <li>✅ 新用户有免费额度</li>
+                <li>✅ GLM-4-Flash 模型免费</li>
+                <li>✅ 中文理解能力强</li>
+                <li>✅ 响应速度快</li>
+              </ul>
+
+              <h3>获取步骤：</h3>
+              <ol>
+                <li>访问 <el-link href="https://open.bigmodel.cn" target="_blank" type="primary">https://open.bigmodel.cn</el-link></li>
+                <li>点击右上角"登录/注册"</li>
+                <li>使用手机号注册账号</li>
+                <li>登录后，点击右上角头像 → "API Keys"</li>
+                <li>点击"创建 API Key"按钮</li>
+                <li>输入名称（如 "CloudNote"）</li>
+                <li>点击"确定"创建</li>
+                <li>复制生成的 API Key</li>
+                <li>粘贴到上面的设置中</li>
+              </ol>
+
+              <el-alert type="success" :closable="false" style="margin-top: 16px;">
+                <strong>国内首选！</strong>无需翻墙，GLM-4-Flash 模型免费使用！
+              </el-alert>
+            </div>
+          </el-tab-pane>
+
+          <el-tab-pane label="🇨🇳 硅基流动">
+            <div class="help-section">
+              <h3>为什么推荐硅基流动？</h3>
+              <ul>
+                <li>✅ 完全免费，无需信用卡</li>
+                <li>✅ 国内访问，无需翻墙</li>
+                <li>✅ 速度快，响应迅速</li>
+                <li>✅ 支持多种开源模型（Qwen、GLM、DeepSeek等）</li>
+                <li>✅ 每天免费额度充足</li>
+              </ul>
+
+              <h3>获取步骤：</h3>
+              <ol>
+                <li>访问 <el-link href="https://siliconflow.cn" target="_blank" type="primary">https://siliconflow.cn</el-link></li>
+                <li>点击右上角"登录/注册"</li>
+                <li>使用手机号或邮箱注册账号</li>
+                <li>登录后，点击右上角头像 → "API密钥"</li>
+                <li>点击"创建新密钥"按钮</li>
+                <li>输入密钥名称（如 "CloudNote"）</li>
+                <li>点击"创建"</li>
+                <li>复制生成的 API Key（只显示一次，请妥善保存）</li>
+                <li>粘贴到上面的设置中</li>
+              </ol>
+
+              <el-alert type="success" :closable="false" style="margin-top: 16px;">
+                <strong>完全免费！</strong>国内访问无需翻墙，每天免费额度充足！
               </el-alert>
             </div>
           </el-tab-pane>
@@ -218,6 +281,9 @@
                 <li>复制并使用</li>
               </ol>
               <p>免费额度：每月 1,000 次调用</p>
+              <el-alert type="warning" :closable="false">
+                <strong>注意：</strong>需要翻墙才能访问！
+              </el-alert>
             </div>
           </el-tab-pane>
 
@@ -232,6 +298,9 @@
                 <li>复制使用</li>
               </ol>
               <p>免费额度：无限制（速度较慢）</p>
+              <el-alert type="warning" :closable="false">
+                <strong>注意：</strong>需要翻墙才能访问！
+              </el-alert>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -268,6 +337,21 @@ const settings = reactive({
   model: localStorage.getItem('ai_model') || 'llama-3.3-70b-versatile'
 })
 
+// 监听提供商变化，自动切换默认模型
+const updateDefaultModel = () => {
+  if (settings.provider === 'zhipu') {
+    settings.model = 'glm-4-flash'
+  } else if (settings.provider === 'siliconflow') {
+    settings.model = 'Qwen/Qwen2.5-7B-Instruct'
+  } else if (settings.provider === 'groq') {
+    settings.model = 'llama-3.3-70b-versatile'
+  } else if (settings.provider === 'cohere') {
+    settings.model = 'command'
+  } else if (settings.provider === 'huggingface') {
+    settings.model = 'mistralai/Mistral-7B-Instruct-v0.2'
+  }
+}
+
 // 快速问题
 const quickQuestions = [
   { icon: '🎯', question: '什么是 Vue 3 的 Composition API？' },
@@ -280,7 +364,20 @@ const quickQuestions = [
 
 // 可用模型
 const availableModels = computed(() => {
-  if (settings.provider === 'groq') {
+  if (settings.provider === 'zhipu') {
+    return [
+      { value: 'glm-4-flash', label: 'GLM-4-Flash (推荐，免费)' },
+      { value: 'glm-4', label: 'GLM-4' },
+      { value: 'glm-4-air', label: 'GLM-4-Air' }
+    ]
+  } else if (settings.provider === 'siliconflow') {
+    return [
+      { value: 'Qwen/Qwen2.5-7B-Instruct', label: 'Qwen 2.5 7B (推荐)' },
+      { value: 'THUDM/glm-4-9b-chat', label: 'GLM-4 9B' },
+      { value: 'deepseek-ai/DeepSeek-V2.5', label: 'DeepSeek V2.5' },
+      { value: 'meta-llama/Meta-Llama-3.1-8B-Instruct', label: 'Llama 3.1 8B' }
+    ]
+  } else if (settings.provider === 'groq') {
     return [
       { value: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B (推荐)' },
       { value: 'llama-3.1-8b-instant', label: 'Llama 3.1 8B (快速)' },
@@ -366,13 +463,94 @@ const clearMessages = () => {
 
 // 调用 AI API
 const callAI = async (message) => {
-  if (settings.provider === 'groq') {
+  if (settings.provider === 'zhipu') {
+    return await callZhipuAPI(message)
+  } else if (settings.provider === 'siliconflow') {
+    return await callSiliconFlowAPI(message)
+  } else if (settings.provider === 'groq') {
     return await callGroqAPI(message)
   } else if (settings.provider === 'cohere') {
     return await callCohereAPI(message)
   } else {
     return await callHuggingFaceAPI(message)
   }
+}
+
+// 智谱AI API 调用
+const callZhipuAPI = async (message) => {
+  const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${settings.apiKey}`
+    },
+    body: JSON.stringify({
+      model: settings.model,
+      messages: [
+        {
+          role: 'system',
+          content: '你是一个友好的学习助手，专门帮助用户理解编程和技术知识。请用简洁、清晰的中文回答问题，并在适当时提供代码示例。'
+        },
+        ...messages.value.slice(-5).map(m => ({
+          role: m.role,
+          content: m.content
+        })),
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 2048
+    })
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error?.message || '请求失败')
+  }
+
+  const data = await response.json()
+  return data.choices[0].message.content
+}
+
+// 硅基流动 API 调用
+const callSiliconFlowAPI = async (message) => {
+  const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${settings.apiKey}`
+    },
+    body: JSON.stringify({
+      model: settings.model,
+      messages: [
+        {
+          role: 'system',
+          content: '你是一个友好的学习助手，专门帮助用户理解编程和技术知识。请用简洁、清晰的中文回答问题，并在适当时提供代码示例。'
+        },
+        ...messages.value.slice(-5).map(m => ({
+          role: m.role,
+          content: m.content
+        })),
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 2048,
+      stream: false
+    })
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error?.message || '请求失败')
+  }
+
+  const data = await response.json()
+  return data.choices[0].message.content
 }
 
 // Groq API 调用
