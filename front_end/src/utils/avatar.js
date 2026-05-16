@@ -2,6 +2,9 @@
  * 头像工具函数
  */
 
+// 获取后端API地址
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+
 /**
  * 获取头像完整URL
  * @param {string} avatar - 头像路径或URL
@@ -16,6 +19,7 @@ export function getAvatarUrl(avatar) {
   }
   
   // 如果是相对路径，拼接后端地址
-  // 注意：后端的静态资源路径需要加 /api 前缀
-  return `http://localhost:8080/api${avatar}`
+  // 移除 /api 后缀（因为 API_BASE_URL 已经包含了）
+  const baseUrl = API_BASE_URL.replace('/api', '')
+  return `${baseUrl}${avatar}`
 }
