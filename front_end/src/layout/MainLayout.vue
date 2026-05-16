@@ -3,6 +3,13 @@
     <!-- 顶部导航栏 -->
     <el-header class="main-header glass-navbar">
       <div class="header-left fade-in-up">
+        <!-- 移动端菜单按钮 -->
+        <el-button 
+          class="mobile-menu-btn" 
+          :icon="Menu" 
+          circle 
+          @click="toggleSidebar"
+        />
         <img src="/logo.svg" alt="CloudNote" class="header-logo" />
         <span class="logo-text">云笔记</span>
       </div>
@@ -43,8 +50,19 @@
 
     <!-- 主体内容区 -->
     <el-container class="main-container">
+      <!-- 移动端遮罩层 -->
+      <div 
+        v-if="showSidebar" 
+        class="sidebar-overlay" 
+        @click="toggleSidebar"
+      ></div>
+
       <!-- 左侧边栏 -->
-      <el-aside width="240px" class="main-aside glass-sidebar custom-scrollbar smooth-scroll">
+      <el-aside 
+        width="240px" 
+        class="main-aside glass-sidebar custom-scrollbar smooth-scroll"
+        :class="{ 'show': showSidebar }"
+      >
         <el-menu
           :default-active="activeMenu"
           class="aside-menu"
@@ -145,7 +163,8 @@ import {
   Plus,
   Delete,
   PriceTag,
-  ChatLineRound
+  ChatLineRound,
+  Menu
 } from '@element-plus/icons-vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 
@@ -153,6 +172,14 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const categoryStore = useCategoryStore()
+
+// 移动端侧边栏显示状态
+const showSidebar = ref(false)
+
+// 切换侧边栏
+const toggleSidebar = () => {
+  showSidebar.value = !showSidebar.value
+}
 
 // 当前激活的菜单
 const activeMenu = computed(() => route.path)
@@ -168,6 +195,10 @@ onMounted(() => {
 // 处理菜单选择
 const handleMenuSelect = (index) => {
   router.push(index)
+  // 移动端选择菜单后自动关闭侧边栏
+  if (window.innerWidth <= 768) {
+    showSidebar.value = false
+  }
 }
 
 // 处理用户下拉菜单
@@ -357,6 +388,12 @@ const selectCategory = (categoryId) => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  /* 移动端菜单按钮 */
+  .mobile-menu-btn {
+    display: inline-flex;
+    margin-right: 8px;
+  }
+
   /* 顶部导航栏 */
   .main-header {
     padding: 0 16px;
@@ -368,6 +405,17 @@ const selectCategory = (categoryId) => {
 
   .username {
     display: none; /* 移动端隐藏用户名 */
+  }
+
+  /* 遮罩层 */
+  .sidebar-overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
   }
 
   /* 左侧边栏 */
@@ -389,6 +437,13 @@ const selectCategory = (categoryId) => {
   /* 主体内容区占满宽度 */
   .main-content {
     width: 100%;
+  }
+}
+
+/* 桌面端隐藏菜单按钮 */
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none;
   }
 }
 

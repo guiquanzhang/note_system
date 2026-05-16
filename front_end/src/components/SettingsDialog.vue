@@ -3,7 +3,9 @@
     v-model="visible"
     title="设置"
     width="600px"
+    :fullscreen="isMobile"
     :before-close="handleClose"
+    class="settings-dialog"
   >
     <el-form label-width="120px">
       <!-- 主题设置 -->
@@ -92,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Sunny, Moon, Monitor, Grid, List, View } from '@element-plus/icons-vue'
 
@@ -106,6 +108,11 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const visible = ref(props.modelValue)
+
+// 检测是否为移动端
+const isMobile = computed(() => {
+  return window.innerWidth <= 768
+})
 
 watch(() => props.modelValue, (val) => {
   visible.value = val
@@ -253,5 +260,61 @@ const handleClose = () => {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  :deep(.el-dialog) {
+    width: 95% !important;
+    margin: 5vh auto !important;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 14px;
+  }
+
+  :deep(.el-radio-button__inner) {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  :deep(.el-select) {
+    width: 100% !important;
+  }
+
+  .form-tip {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  :deep(.el-form) {
+    padding: 0 8px;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 16px;
+  }
+
+  :deep(.el-form-item__label) {
+    width: 100px !important;
+    font-size: 13px;
+  }
+
+  :deep(.el-radio-group) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  :deep(.el-radio-button) {
+    flex: 1 1 45%;
+  }
+
+  :deep(.el-radio-button__inner) {
+    padding: 6px 8px;
+    font-size: 12px;
+    width: 100%;
+  }
 }
 </style>

@@ -10,7 +10,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:cloudnote}?useUnicode=true&characterEncoding=utf8&useSSL=${MYSQL_SSL:false}&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:cloudnote}?useUnicode=true&characterEncoding=utf8&useSSL=${MYSQL_SSL:false}&requireSSL=${MYSQL_SSL:false}&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&verifyServerCertificate=false
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:123456}
   
